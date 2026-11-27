@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Enquête logistique : Mission Amazon — Technologie 5e</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap');
+
+  :root{
+    --blue:#2563eb;
+    --violet:#7c3aed;
+    --blue-light:#eff6ff;
+    --violet-light:#f5f3ff;
+    --text:#1e293b;
+    --muted:#64748b;
+    --border:#e2e8f0;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    font-family:'Nunito', sans-serif;
+    color:var(--text);
+    background:#f8fafc;
+    margin:0;
+  }
+
+  .page{
+    max-width:210mm;
+    margin:0 auto;
+    padding:14mm 16mm 24mm;
+    background:#fff;
+  }
+
+  .toolbar{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:#fff;
+    border-bottom:1px solid var(--border);
+    padding:10px 16mm;
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    max-width:210mm;
+    margin:0 auto;
+  }
+
+  button.btn{
+    font-family:'Nunito', sans-serif;
+    font-weight:700;
+    font-size:0.8rem;
+    background:var(--blue);
+    color:#fff;
+    border:none;
+    padding:8px 14px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  button.btn:hover{background:#1d4ed8;}
+
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    border-bottom:4px solid var(--blue);
+    padding-bottom:10px;
+    margin-bottom:18px;
+    gap:16px;
+  }
+
+  .header h1{
+    font-size:1.5rem;
+    font-weight:800;
+    margin:0 0 4px 0;
+    color:var(--blue);
+  }
+
+  .header .subtitle{
+    color:var(--violet);
+    font-weight:700;
+    font-size:0.95rem;
+  }
+
+  .meta{
+    font-family:'Space Mono', monospace;
+    font-size:0.75rem;
+    color:var(--muted);
+    line-height:1.8;
+    min-width:160px;
+  }
+
+  .meta-row{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    margin-bottom:2px;
+  }
+
+  .meta-row .fill{
+    flex:1;
+    min-width:100px;
+  }
+
+  .infoline{
+    padding:8px 12px;
+    font-size:0.8rem;
+    font-family:'Space Mono', monospace;
+    color:var(--text);
+    margin-bottom:20px;
+  }
+
+  .step{
+    margin-bottom:22px;
+  }
+
+  .step-header{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+
+  .step-number{
+    background:var(--violet);
+    color:#fff;
+    font-weight:800;
+    font-family:'Space Mono', monospace;
+    width:28px;
+    height:28px;
+    min-width:28px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.9rem;
+  }
+
+  .step-title{
+    font-weight:800;
+    font-size:1.05rem;
+    color:var(--text);
+  }
+
+  .step-body{
+    padding-left:38px;
+    font-size:0.9rem;
+  }
+
+  .box{
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-top:8px;
+    background:#fafafa;
+  }
+
+  .question{
+    margin-bottom:10px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:6px;
+  }
+  .question .q-num{
+    font-weight:700;
+    color:var(--blue);
+  }
+  .question .q-label{
+    white-space:nowrap;
+  }
+
+  /* Champ de réponse : contenteditable, s'agrandit avec le contenu, jamais tronqué */
+  .fill{
+    display:inline-block;
+    min-width:120px;
+    flex:1;
+    font-family:'Nunito', sans-serif;
+    font-size:0.85rem;
+    border:none;
+    border-bottom:1px solid var(--muted);
+    background:transparent;
+    padding:3px 4px;
+    color:var(--text);
+    white-space:normal;
+    overflow-wrap:break-word;
+    word-break:break-word;
+    min-height:1.4em;
+  }
+  .fill:empty::before{
+    content:"";
+  }
+  .fill:focus{
+    outline:none;
+    border-bottom:2px solid var(--blue);
+    background:var(--blue-light);
+  }
+
+  table.pwd{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.78rem;
+    margin-top:8px;
+    table-layout:fixed;
+  }
+  table.pwd th, table.pwd td{
+    border:1px solid var(--border);
+    padding:5px 7px;
+    text-align:left;
+    vertical-align:top;
+    overflow-wrap:break-word;
+    word-break:break-word;
+  }
+  table.pwd th{
+    background:var(--blue-light);
+    font-weight:700;
+  }
+  table.pwd td .fill{
+    display:block;
+    width:100%;
+    min-width:0;
+    border-bottom:1px dotted var(--muted);
+  }
+  table.pwd td select{
+    font-family:'Nunito', sans-serif;
+    font-size:0.78rem;
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:2px 4px;
+    width:100%;
+  }
+  table.pwd tr{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+
+  .tag{
+    display:inline-block;
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    padding:2px 8px;
+    border-radius:10px;
+    font-weight:700;
+  }
+  .tag-defi{
+    background:var(--violet-light);
+    color:var(--violet);
+  }
+
+  .checklist{padding-left:4px;list-style:none;margin:0;}
+  .checklist li{
+    margin-bottom:8px;
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .checklist input[type="checkbox"]{
+    width:16px;
+    height:16px;
+    margin-top:2px;
+    accent-color:var(--violet);
+    flex-shrink:0;
+  }
+  .checklist label{cursor:pointer;}
+
+  ol.method li{margin-bottom:4px;}
+
+  .footer{
+    margin-top:24px;
+    padding-top:10px;
+    border-top:2px solid var(--border);
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    color:var(--muted);
+    display:flex;
+    justify-content:space-between;
+  }
+
+  @media print{
+    .toolbar{display:none;}
+    body{background:#fff;}
+    .page{padding:45px;}
+    .fill{border-bottom:1px solid #999;}
+    .step, .box, tr, .checklist li{
+      break-inside:avoid;
+      page-break-inside:avoid;
+    }
+    .pdf-payload{
+      display:block !important;
+      font-size:1px;
+      line-height:1px;
+      color:#ffffff;
+      word-break:break-all;
+      white-space:pre-wrap;
+      margin:0;
+      padding:0;
+    }
+  }
+  .pdf-payload{ display:none; }
+
+  .toolbar-status{
+    font-family:'Space Mono', monospace;
+    font-size:0.7rem;
+    color:var(--muted);
+    margin-right:auto;
+  }
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .cfg{border:1px solid var(--border);border-radius:8px;padding:8px 12px;background:#fff;font-size:0.85rem;line-height:1.5;}
+  .cfg b{color:var(--blue);}
+  .user{font-weight:800;margin:0 0 6px 0;}
+  .fn{display:flex;gap:8px;align-items:baseline;font-size:0.85rem;margin-bottom:4px;}
+  .fn .l{font-family:'Space Mono',monospace;font-weight:700;color:var(--violet);}
+  .good{color:var(--blue);font-weight:800;}
+  td.c{text-align:center;}
+  @media print{.help,.add-nom{display:none !important;}}
+  .add-nom{font-family:inherit;font-size:0.75rem;font-weight:700;color:var(--violet);background:#fff;border:1px dashed var(--violet);border-radius:6px;padding:3px 10px;margin-top:4px;cursor:pointer;}
+  .add-nom:hover{background:var(--violet-light);}
+
+  .fill.block{display:block;width:100%;min-height:2.6em;margin-top:2px;}
+  select.wide{font-family:'Nunito',sans-serif;font-size:0.85rem;width:100%;max-width:100%;padding:5px 6px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--text);}
+  .question select.wide{flex:1;min-width:0;width:auto;}
+  select.sm{font-family:'Nunito',sans-serif;font-size:0.85rem;width:70px;padding:3px 4px;border:1px solid var(--border);border-radius:6px;background:#fff;}
+  td select{width:calc(100% - 24px);}
+  select.ok{border:2px solid #16a34a !important;background:#f0fdf4 !important;}
+  select.ko{border:2px solid #dc2626 !important;background:#fef2f2 !important;}
+  select.todo{border:2px dashed #f59e0b !important;background:#fffbeb !important;}
+  .mark{display:inline-block;width:22px;text-align:center;font-weight:800;}
+  .mark.ok{color:#16a34a;} .mark.ko{color:#dc2626;} .mark.todo{color:#f59e0b;}
+  #score-box{display:none;margin-top:20px;padding:12px 16px;border-radius:8px;border:2px solid var(--violet);background:var(--violet-light);font-weight:700;}
+  #score-box .big{font-family:'Space Mono',monospace;font-size:1.3rem;color:var(--violet);}
+  #score-box .code{margin-top:8px;font-weight:600;font-size:0.75rem;}
+  #score-box .code span{font-family:'Space Mono',monospace;font-size:0.7rem;word-break:break-all;display:block;margin-top:2px;font-weight:400;}
+  @media print{.noprint{display:none !important;}}
+  .bilan-note{text-align:center;border:2px solid var(--blue);background:var(--blue-light);border-radius:10px;padding:12px;margin:12px 0;}
+  .bilan-note .big{font-size:2.2rem;font-weight:800;color:var(--blue);line-height:1.1;}
+  .bl-row{display:flex;justify-content:space-between;gap:10px;padding:5px 2px;border-bottom:1px solid var(--border);font-size:0.9rem;}
+  .bl-row.full strong{color:#15803d;} .bl-row.low strong{color:#b91c1c;}
+  .bl-err{font-size:0.8rem;color:var(--muted);margin:2px 0;}
+  .vc{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);margin-left:10px;}
+  .vc.warn{color:#b45309;}
+  .vc.stop{color:#b91c1c;font-weight:700;}
+  button.btn:disabled{background:#94a3b8;cursor:not-allowed;}
+  .rule-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0;}
+  .rule-steps div{border:1px solid var(--border);border-radius:8px;padding:6px 4px;text-align:center;background:#fff;font-size:0.78rem;line-height:1.35;}
+  .rule-steps b{display:block;font-family:'Space Mono',monospace;font-size:0.95rem;color:var(--violet);}
+  .rule-steps .free b{color:#15803d;}
+  .rule-steps .stopc b{color:#b91c1c;}
+  @media (max-width:560px){.rule-steps{grid-template-columns:repeat(2,1fr);}}
+  .conn-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+  .conn{border:1px solid var(--border);border-radius:8px;padding:6px 8px;background:#fff;break-inside:avoid;}
+  .conn .cn{font-family:'Space Mono',monospace;font-weight:700;color:var(--violet);font-size:0.8rem;}
+  .conn svg{width:100%;height:auto;max-height:64px;display:block;margin:2px 0 6px;}
+  .conn select{width:calc(100% - 26px);font-family:'Nunito',sans-serif;font-size:0.8rem;}
+  .ports{display:grid;grid-template-columns:270px 1fr;gap:14px;margin-top:8px;align-items:start;}
+  .fig{position:relative;line-height:0;}
+  .fig img{width:100%;height:auto;border:1px solid var(--border);border-radius:6px;}
+  .fig svg{position:absolute;left:0;top:0;width:100%;height:100%;}
+  .fig-cap{font-size:0.72rem;color:var(--muted);line-height:1.3;margin-top:3px;text-align:center;}
+  @media (max-width:560px){.conn-grid{grid-template-columns:repeat(2,1fr);}.ports{grid-template-columns:1fr;}}
+  .sortbox{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0;}
+  .zone{border:2px dashed var(--border);border-radius:10px;padding:8px;min-height:96px;background:#fafafa;}
+  .zone .zt{font-weight:800;font-size:0.9rem;margin-bottom:6px;}
+  .zone .zt span{display:block;font-family:'Space Mono',monospace;font-size:0.7rem;font-weight:400;color:var(--muted);}
+  #z-int{border-color:#93c5fd;background:var(--blue-light);}
+  #z-per{border-color:#c4b5fd;background:var(--violet-light);}
+  .zc{display:flex;flex-wrap:wrap;gap:6px;min-height:34px;}
+  .cardx{font-family:'Nunito',sans-serif;font-weight:700;font-size:0.82rem;background:#fff;border:2px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--text);}
+  .tray{position:sticky;top:46px;z-index:5;display:flex;flex-wrap:wrap;gap:6px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px;margin:10px 0;}
+  .chip{width:80px;font-family:'Nunito',sans-serif;font-size:0.68rem;font-weight:700;background:#fff;border:2px solid var(--border);border-radius:8px;padding:4px;cursor:pointer;color:var(--text);}
+  .chip svg{width:100%;height:42px;display:block;}
+  .chip span{display:block;}
+  .dev{display:flex;align-items:center;gap:10px;margin-bottom:8px;break-inside:avoid;}
+  .dev .dn{flex:1;font-size:0.88rem;font-weight:700;}
+  .socket{width:96px;min-height:58px;border:2px dashed var(--muted);border-radius:8px;background:#fff;cursor:pointer;padding:3px;font-family:'Nunito',sans-serif;font-size:0.65rem;color:var(--muted);}
+  .socket.filled{border-style:solid;border-color:var(--violet);color:var(--text);font-weight:700;}
+  .socket svg{width:100%;height:36px;display:block;}
+  .cardx.sel,.chip.sel{outline:3px solid var(--violet);outline-offset:1px;}
+  .cardx.ok,.socket.ok{border:2px solid #16a34a;background:#f0fdf4;}
+  .cardx.ko,.socket.ko{border:2px solid #dc2626;background:#fef2f2;}
+  .cardx.todo,.socket.todo{border:2px dashed #f59e0b;background:#fffbeb;}
+  .copy-warn{position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:100;background:#b91c1c;color:#fff;font-weight:800;font-size:0.95rem;padding:12px 18px;border-radius:10px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center;}
+  .copy-warn.show{opacity:1;}
+  @media (max-width:560px){.sortbox{grid-template-columns:1fr;}}
+  @media print{.tray{position:static;}}
+  .memo{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;margin-top:8px;font-size:0.84rem;line-height:1.4;}
+  .memo div{break-inside:avoid;}
+  @media (max-width:560px){.memo{grid-template-columns:1fr;}}
+
+  .q-num{font-weight:700;color:var(--blue);}
+  .mono-cell{font-family:'Space Mono','Courier New',monospace;font-weight:700;}
+  .schema{border:1px solid var(--border);border-radius:8px;padding:8px;background:#fff;margin:8px 0;}
+  .schema svg{width:100%;height:auto;display:block;}
+  .box.comp{background:var(--blue-light);border-color:#bfdbfe;font-size:0.85rem;line-height:1.45;}
+  .box.comp ul{margin:2px 0 0 18px;padding:0;}
+  .box.comp li{margin-bottom:2px;}
+
+  :root{--purple:#7c3aed;--purple-l:#f5f3ff;--blue-l:#eff6ff;--grey:#64748b;--amber:#d97706;--amber-l:#fffbeb;--red:#dc2626;--red-l:#fef2f2;}
+.situation{background:var(--purple-l);border:1.5px solid #ddd6fe;border-radius:12px;padding:14px 16px;margin:16px 0}
+.situation .tagline{font-family:'Space Mono',monospace;font-size:11px;color:var(--purple);font-weight:700;letter-spacing:1px}
+.problem{margin-top:10px;background:#fff;border-left:5px solid var(--purple);padding:10px 12px;border-radius:6px;font-weight:800;font-size:15px}
+.dossier{display:grid;grid-template-columns:1fr 1fr;gap:14px;grid-auto-flow:dense}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.shots figure{margin:0;text-align:center}
+.shots img{width:100%;border-radius:10px;border:1px solid var(--border);cursor:zoom-in;display:block}
+.shots figcaption{font-family:'Space Mono',monospace;font-weight:700;font-size:12px;color:var(--blue);margin-top:4px}
+#zoom{position:fixed;inset:0;background:rgba(15,23,42,.85);display:none;align-items:center;justify-content:center;z-index:98;cursor:zoom-out}
+#zoom img{max-height:94vh;max-width:94vw;border-radius:10px}
+.doc{border:1.5px solid var(--border);border-radius:12px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.doc.wide{grid-column:1 / -1}
+.doc-head{background:var(--blue-l);padding:8px 12px;font-weight:900;font-size:13px;color:var(--blue);display:flex;gap:8px;align-items:center}
+.doc-head .badge{font-family:'Space Mono',monospace;background:var(--blue);color:#fff;border-radius:6px;padding:2px 7px;font-size:11px}
+.doc-body{padding:10px 12px;font-size:13px;flex:1}
+.doc-body p{margin:0 0 8px}
+.doc-src{font-family:'Space Mono',monospace;font-size:10px;color:var(--grey);padding:6px 12px;border-top:1px dashed var(--border)}
+.clue{font-family:'Space Mono',monospace;font-weight:700;font-size:11.5px;background:var(--amber-l);color:var(--amber);border:1px solid #fde68a;border-radius:5px;padding:0 5px;white-space:nowrap}
+.specs{width:100%;border-collapse:collapse;font-size:12.5px}
+.specs td{border-bottom:1px solid var(--border);padding:5px 4px;vertical-align:top}
+.specs td:first-child{font-weight:800;width:42%}
+.bigfig{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.bigfig div{flex:1;min-width:120px;background:var(--red-l);border:1px solid #fecaca;border-radius:10px;padding:8px;text-align:center;font-size:12px}
+.bigfig b{display:block;font-size:22px;color:var(--red);font-weight:900}
+.fiction{font-size:11.5px;color:var(--grey);font-style:italic;margin-top:8px}
+  .situation p{font-size:0.92rem;line-height:1.5;}
+  .dossier{margin:0 0 8px 0;}
+  .sortbox.sort3{grid-template-columns:1fr 1fr 1fr;}
+  @media (max-width:560px){.sortbox.sort3{grid-template-columns:1fr;}.dossier{grid-template-columns:1fr;}}
+  .doc-head .badge{font-size:0.7rem;}
+
+  .chip.txt{width:auto;font-size:0.8rem;padding:6px 10px;line-height:1.2;}
+  .chip.txt.used{display:none;}
+  .tl-head{display:flex;justify-content:space-between;font-weight:700;font-size:0.8rem;color:var(--muted);padding:0 4px 4px 40px;}
+  .tl-head span:last-child{width:235px;}
+  .timeline{position:relative;}
+  .timeline::before{content:"";position:absolute;left:13px;top:20px;bottom:20px;width:3px;background:#ddd6fe;border-radius:2px;}
+  .tl-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;position:relative;break-inside:avoid;}
+  .tl-num{width:28px;height:28px;min-width:28px;border-radius:50%;background:var(--violet);color:#fff;font-weight:800;font-family:'Space Mono',monospace;display:flex;align-items:center;justify-content:center;font-size:0.9rem;z-index:1;}
+  .socket.txt{flex:1;width:auto;min-height:40px;font-size:0.85rem;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 8px;}
+  .socket.txt span{display:block;}
+  select.tl-when{width:235px;flex:none;font-family:'Nunito',sans-serif;font-size:0.8rem;padding:6px 4px;border:1px solid var(--border);border-radius:6px;background:#fff;}
+  @media (max-width:560px){.tl-row{flex-wrap:wrap;}select.tl-when{width:100%;margin-left:38px;}.tl-head{display:none;}}
+
+  .mg-row{display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-top:1px solid #ddd6fe;}
+  .mg-q{flex:1;font-size:0.85rem;}
+  .mg-a{margin-top:4px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:6px 8px;white-space:pre-wrap;font-size:0.85rem;min-height:1.6em;}
+  .mg-a .lab{font-weight:700;color:var(--blue);}
+  .mg-a .empty{color:#b91c1c;font-style:italic;}
+  select.mg-sel{width:90px;flex:none;}
+</style>
+</head>
+<body>
+  <div class="toolbar">
+    <span id="save-indicator" class="toolbar-status"></span>
+    <button class="btn" id="reset-btn" style="background:#64748b; margin-right:8px;">Tout réinitialiser</button>
+    <button class="btn" id="save-btn" style="background:var(--violet); margin-right:8px;">Enregistrer mon travail</button>
+  </div>
+
+  <div class="page">
+  <div class="header">
+    <div>
+      <h1>Enquête logistique : Mission Amazon</h1>
+      <div class="subtitle">Comment un colis peut-il arriver en moins de 21 heures… un dimanche ?</div>
+    </div>
+    <div class="meta">
+      Technologie — 5e
+      <div class="meta-row">Nom 1 : <span class="fill" contenteditable="true" spellcheck="false"></span></div>
+      <div class="meta-row">Nom 2 : <span class="fill" contenteditable="true" spellcheck="false"></span></div>
+      <div class="meta-row" id="nom3-row" style="display:none;">Nom 3 : <span class="fill" contenteditable="true" spellcheck="false"></span></div>
+      <button type="button" id="add-nom3" class="add-nom">+ Ajouter un 3e nom</button>
+    </div>
+  </div>
+
+  <div class="box help" style="margin:0 0 14px 0;">
+    <p style="margin:0 0 6px 0;font-weight:700;">Comment fonctionne le bouton « Vérifier mes réponses » ?</p>
+    <p style="margin:0;">Il t'aide à te corriger, mais il ne remplace pas ta réflexion : <strong>plus tu l'utilises, plus ta note baisse</strong>. Le compte se fait <strong>pour chaque exercice</strong> (pénalité maximale : −1,5 point par exercice) :</p>
+    <div class="rule-steps">
+      <div class="free"><b>1re</b>vérification<br>gratuite</div>
+      <div><b>2e</b>−0,5 point</div>
+      <div><b>3e</b>−1 point</div>
+      <div><b>4e</b>−1,5 point</div>
+      <div class="stopc"><b>Ensuite</b>bouton bloqué</div>
+    </div>
+    <p style="margin:0;">Pas de pénalité si tu n'as rien changé depuis ta dernière vérification, ni si toutes tes réponses sont déjà justes. <strong>Conseil :</strong> réponds à toutes les questions et relis-les avant de cliquer.</p>
+  </div>
+
+  <div class="box help" style="margin:0 0 14px 0;">
+    <p style="margin:0 0 4px 0;font-weight:700;">Tu n'as pas fini ?</p>
+    <p style="margin:0;">Écris vos noms et prénoms, puis clique sur <strong>Enregistrer mon travail</strong> : un fichier est enregistré sur l'ordinateur. La prochaine fois, <strong>ouvre ce fichier</strong> pour reprendre là où tu t'étais arrêté(e). À la fin de chaque exercice, clique sur <strong>Vérifier mes réponses</strong> : vert = juste, rouge = faux (tu peux corriger et revérifier, mais chaque vérification supplémentaire coûte des points : voir ci-dessus). Les réponses rédigées ne sont pas vérifiées automatiquement : <strong>ton professeur les lit et les note (4 points sur 20)</strong>. La note est réservée à l'enseignant(e) (partie « Mon bilan » en bas de page). Quand tu as tout terminé, enregistre une dernière fois : c'est ce fichier que tu rendras.</p>
+  </div>
+
+  <div class="box comp" style="margin:0 0 14px 0;">
+    <p style="margin:0 0 4px 0;font-weight:700;color:var(--blue);">📘 Compétences travaillées <span style="font-weight:400;color:var(--muted);font-size:0.8rem;">— programme de technologie cycle 4, BO n°9 du 29 février 2024</span></p>
+    <p style="margin:0 0 2px 0;"><strong>Thème :</strong> Les objets et les systèmes techniques : leurs usages et leurs interactions à découvrir et à analyser</p><p style="margin:0 0 2px 0;"><strong>Compétences :</strong></p><ul><li><strong>OST1</strong> – Décrire les liens entre usages et évolutions technologiques des objets et des systèmes techniques</li><li><strong>OST2</strong> – Décrire les interactions entre un objet ou un système technique, son environnement et les utilisateurs</li></ul><p style="margin:4px 0 0 0;"><strong>Savoir-faire (repères de 5e) :</strong></p><ul><li><strong>OST11</strong> – Collecter, trier et analyser des données <span style="color:var(--muted);">(exercices 1 et 3)</span></li><li><strong>OST12</strong> – Comparer des principes techniques pour une même fonction technique <span style="color:var(--muted);">(exercice 3)</span></li><li><strong>OST21</strong> – Faire la liste des interacteurs extérieurs d'un OST <span style="color:var(--muted);">(exercices 2 et 4)</span></li><li><strong>OST22</strong> – Repérer et expliquer les choix de conception dans les domaines de l'ergonomie et de la sécurité <span style="color:var(--muted);">(exercices 2 et 3)</span></li></ul><p style="margin:4px 0 0 0;"><strong>Connaissances :</strong></p><ul><li>Les éléments qui participent à l'évolution des besoins (invention, innovation)</li><li>Les interacteurs extérieurs : usagers, données, autres objets, éléments de l'environnement</li></ul>
+  </div>
+
+  <!-- ================= SITUATION ================= -->
+  <div class="situation">
+    <div class="tagline">📁 DOSSIER N° AMZ-5E — SITUATION DE DÉPART</div>
+    <p style="margin:8px 0 0">Cette enquête part d'une <b>vraie commande</b>, passée par Léna Martin. <b>Samedi 17 octobre 2026 à 21h10</b>, Léna commande une lampe torche à clip sur Amazon. <b>Dimanche 18 octobre à 17h58</b>, la lampe est déjà dans sa boîte aux lettres !<br>
+    Entre les deux, la lampe a été trouvée parmi des millions d'articles, emballée, étiquetée et transportée… en pleine nuit et un dimanche. Pourtant, dans les entrepôts, des milliers de personnes travaillent chaque jour… et le travail en entrepôt peut être très dur pour le corps.</p>
+    <div class="problem">❓ Problème à résoudre : comment Amazon arrive-t-il à préparer une commande aussi vite tout en protégeant ses employés ?</div>
+  </div>
+
+  <!-- ================= ÉTAPE 1 : HYPOTHÈSES ================= -->
+  <div class="step">
+    <div class="step-header"><div class="step-number">1</div><div class="step-title">Nos hypothèses</div></div>
+    <div class="step-body">
+      <p>Avant d'ouvrir le dossier, discutez à deux. <strong>Proposez au moins une hypothèse</strong> pour répondre au problème. Une hypothèse peut être fausse : c'est l'enquête qui le dira !</p>
+      <div class="box"><p style="margin:0;font-weight:700;">Nous pensons que… parce que… <span style="font-weight:400;color:var(--muted);font-size:0.8rem;">(noté par ton professeur · 1 pt)</span></p><span class="fill block" contenteditable="true" data-mgsrc="hyp"></span></div>
+    </div>
+  </div>
+
+  <div class="box" style="margin:0 0 22px 0;background:var(--violet-light);border-color:#ddd6fe;"><p style="margin:0;">📄 <strong>Le dossier d'enquête (documents A à J) t'est distribué sur papier.</strong> Lis-le attentivement avant de commencer les exercices. Le <strong>document A</strong> contient les vrais e-mails reçus par Léna : repère les <strong>dates et heures</strong>. Les autres documents expliquent ce qui se passe entre ces e-mails.</p></div>
+  
+
+  <!-- ================= EXERCICE 1 ================= -->
+  <div class="step" data-s="e1" style="margin-top:22px;">
+    <div class="step-header"><div class="step-number">2</div><div class="step-title">Exercice 1 · Reconstituer le trajet de la commande</div></div>
+    <div class="step-body">
+      <p><span class="q-num">a)</span> Remets les 9 étapes dans l'ordre. Seules 4 étapes ont une heure exacte, donnée par un e-mail du doc A. Pour les autres, choisis entre quelles heures elles se sont <strong>forcément</strong> passées.</p>
+      <p style="margin:4px 0 0 0;color:var(--muted);font-size:0.85rem;">Touche une étape, puis touche la case où la placer (tu peux aussi la glisser). Pour vider une case, touche-la. Ensuite, choisis « Quand ? » à droite.</p><div class="tray tl-tray"><button type="button" class="chip txt" data-val="Le colis quitte l&#x27;entrepôt en camion" draggable="true"><span>Le colis quitte l&#x27;entrepôt en camion</span></button><button type="button" class="chip txt" data-val="Calcul de la taille du carton" draggable="true"><span>Calcul de la taille du carton</span></button><button type="button" class="chip txt" data-val="Colis déposé dans la boîte aux lettres" draggable="true"><span>Colis déposé dans la boîte aux lettres</span></button><button type="button" class="chip txt" data-val="Commande passée sur le site" draggable="true"><span>Commande passée sur le site</span></button><button type="button" class="chip txt" data-val="Tri du colis à l&#x27;agence de livraison" draggable="true"><span>Tri du colis à l&#x27;agence de livraison</span></button><button type="button" class="chip txt" data-val="Mise en carton et calage" draggable="true"><span>Mise en carton et calage</span></button><button type="button" class="chip txt" data-val="Le livreur part en tournée" draggable="true"><span>Le livreur part en tournée</span></button><button type="button" class="chip txt" data-val="Hercules apporte l&#x27;étagère à Inès" draggable="true"><span>Hercules apporte l&#x27;étagère à Inès</span></button><button type="button" class="chip txt" data-val="Étiquetage par la machine SLAM" draggable="true"><span>Étiquetage par la machine SLAM</span></button></div><div class="tl-head"><span>Étape</span><span>Quand ?</span></div><div class="timeline"><div class="tl-row"><div class="tl-num">1</div><div class="socket txt" id="sk-1"><span class="ph">touche ici</span></div><select class="tl-when" data-label="Ex1 – a) Quand, étape 1" data-answer="sam. 21h10"><option value=""></option><option>sam. 21h10</option><option>sam. 23h58</option><option>dim. 11h49</option><option>dim. 17h58</option><option>entre sam. 21h10 et sam. 23h58</option><option>entre sam. 23h58 et dim. 11h49</option></select></div><div class="tl-row"><div class="tl-num">2</div><div class="socket txt" id="sk-2"><span class="ph">touche ici</span></div><select class="tl-when" data-label="Ex1 – a) Quand, étape 2" data-answer="entre sam. 21h10 et sam. 23h58"><option value=""></option><option>sam. 21h10</option><option>sam. 23h58</option><option>dim. 11h49</option><option>dim. 17h58</option><option>entre sam. 21h10 et sam. 23h58</option><option>entre sam. 23h58 et dim. 11h49</option></select></div><div class="tl-row"><div class="tl-num">3</div><div class="socket txt" id="sk-3"><span class="ph">touche ici</span></div><select class="tl-when" data-label="Ex1 – a) Quand, étape 3" data-answer="entre sam. 21h10 et sam. 23h58"><option value=""></option><option>sam. 21h10</option><option>sam. 23h58</option><option>dim. 11h49</option><option>dim. 17h58</option><option>entre sam. 21h10 et sam. 23h58</option><option>entre sam. 23h58 et dim. 11h49</option></select></div><div class="tl-row"><div class="tl-num">4</div><div class="socket txt" id="sk-4"><span class="ph">touche ici</span></div><select class="tl-when" data-label="Ex1 – a) Quand, étape 4" data-answer="entre sam. 21h10 et sam. 23h58"><option value=""></option><option>sam. 21h10</option><option>sam. 23h58</option><option>dim. 11h49</option><option>dim. 17h58</option><option>entre sam. 21h10 et sam. 23h58</option><option>entre sam. 23h58 et dim. 11h49</option></select></div><div class="tl-row"><div class="tl-num">5</div><div class="socket txt" id="sk-5"><span class="ph">touche ici</span></div><select class="tl-when" data-label="Ex1 – a) Quand, étape 5" data-answer="entre sam. 21h10 et sam. 23h58"><option value=""></option><option>sam. 21h10</option><option>sam. 23h58</option><option>dim. 11h49</option><option>dim. 17h58</option><option>entre sam. 21h10 et sam. 23h58</option><option>entre sam. 23h58 et dim. 11h49</option></select></div><div class="tl-row"><div class="tl-num">6</div><div class="socket txt" id="sk-6"><span class="ph">touche ici</span></div><select class="tl-when" data-label="Ex1 – a) Quand, étape 6" data-answer="sam. 23h58"><option value=""></option><option>sam. 21h10</option><option>sam. 23h58</option><option>dim. 11h49</option><option>dim. 17h58</option><option>entre sam. 21h10 et sam. 23h58</option><option>entre sam. 23h58 et dim. 11h49</option></select></div><div class="tl-row"><div class="tl-num">7</div><div class="socket txt" id="sk-7"><span class="ph">touche ici</span></div><select class="tl-when" data-label="Ex1 – a) Quand, étape 7" data-answer="entre sam. 23h58 et dim. 11h49"><option value=""></option><option>sam. 21h10</option><option>sam. 23h58</option><option>dim. 11h49</option><option>dim. 17h58</option><option>entre sam. 21h10 et sam. 23h58</option><option>entre sam. 23h58 et dim. 11h49</option></select></div><div class="tl-row"><div class="tl-num">8</div><div class="socket txt" id="sk-8"><span class="ph">touche ici</span></div><select class="tl-when" data-label="Ex1 – a) Quand, étape 8" data-answer="dim. 11h49"><option value=""></option><option>sam. 21h10</option><option>sam. 23h58</option><option>dim. 11h49</option><option>dim. 17h58</option><option>entre sam. 21h10 et sam. 23h58</option><option>entre sam. 23h58 et dim. 11h49</option></select></div><div class="tl-row"><div class="tl-num">9</div><div class="socket txt" id="sk-9"><span class="ph">touche ici</span></div><select class="tl-when" data-label="Ex1 – a) Quand, étape 9" data-answer="dim. 17h58"><option value=""></option><option>sam. 21h10</option><option>sam. 23h58</option><option>dim. 11h49</option><option>dim. 17h58</option><option>entre sam. 21h10 et sam. 23h58</option><option>entre sam. 23h58 et dim. 11h49</option></select></div></div><div style="display:none"><select data-ui="sk-1" data-label="Ex1 – a) Étape 1" data-answer="Commande passée sur le site"><option value=""></option><option>Commande passée sur le site</option><option>Hercules apporte l&#x27;étagère à Inès</option><option>Calcul de la taille du carton</option><option>Mise en carton et calage</option><option>Étiquetage par la machine SLAM</option><option>Le colis quitte l&#x27;entrepôt en camion</option><option>Tri du colis à l&#x27;agence de livraison</option><option>Le livreur part en tournée</option><option>Colis déposé dans la boîte aux lettres</option></select><select data-ui="sk-2" data-label="Ex1 – a) Étape 2" data-answer="Hercules apporte l&#x27;étagère à Inès"><option value=""></option><option>Commande passée sur le site</option><option>Hercules apporte l&#x27;étagère à Inès</option><option>Calcul de la taille du carton</option><option>Mise en carton et calage</option><option>Étiquetage par la machine SLAM</option><option>Le colis quitte l&#x27;entrepôt en camion</option><option>Tri du colis à l&#x27;agence de livraison</option><option>Le livreur part en tournée</option><option>Colis déposé dans la boîte aux lettres</option></select><select data-ui="sk-3" data-label="Ex1 – a) Étape 3" data-answer="Calcul de la taille du carton"><option value=""></option><option>Commande passée sur le site</option><option>Hercules apporte l&#x27;étagère à Inès</option><option>Calcul de la taille du carton</option><option>Mise en carton et calage</option><option>Étiquetage par la machine SLAM</option><option>Le colis quitte l&#x27;entrepôt en camion</option><option>Tri du colis à l&#x27;agence de livraison</option><option>Le livreur part en tournée</option><option>Colis déposé dans la boîte aux lettres</option></select><select data-ui="sk-4" data-label="Ex1 – a) Étape 4" data-answer="Mise en carton et calage"><option value=""></option><option>Commande passée sur le site</option><option>Hercules apporte l&#x27;étagère à Inès</option><option>Calcul de la taille du carton</option><option>Mise en carton et calage</option><option>Étiquetage par la machine SLAM</option><option>Le colis quitte l&#x27;entrepôt en camion</option><option>Tri du colis à l&#x27;agence de livraison</option><option>Le livreur part en tournée</option><option>Colis déposé dans la boîte aux lettres</option></select><select data-ui="sk-5" data-label="Ex1 – a) Étape 5" data-answer="Étiquetage par la machine SLAM"><option value=""></option><option>Commande passée sur le site</option><option>Hercules apporte l&#x27;étagère à Inès</option><option>Calcul de la taille du carton</option><option>Mise en carton et calage</option><option>Étiquetage par la machine SLAM</option><option>Le colis quitte l&#x27;entrepôt en camion</option><option>Tri du colis à l&#x27;agence de livraison</option><option>Le livreur part en tournée</option><option>Colis déposé dans la boîte aux lettres</option></select><select data-ui="sk-6" data-label="Ex1 – a) Étape 6" data-answer="Le colis quitte l&#x27;entrepôt en camion"><option value=""></option><option>Commande passée sur le site</option><option>Hercules apporte l&#x27;étagère à Inès</option><option>Calcul de la taille du carton</option><option>Mise en carton et calage</option><option>Étiquetage par la machine SLAM</option><option>Le colis quitte l&#x27;entrepôt en camion</option><option>Tri du colis à l&#x27;agence de livraison</option><option>Le livreur part en tournée</option><option>Colis déposé dans la boîte aux lettres</option></select><select data-ui="sk-7" data-label="Ex1 – a) Étape 7" data-answer="Tri du colis à l&#x27;agence de livraison"><option value=""></option><option>Commande passée sur le site</option><option>Hercules apporte l&#x27;étagère à Inès</option><option>Calcul de la taille du carton</option><option>Mise en carton et calage</option><option>Étiquetage par la machine SLAM</option><option>Le colis quitte l&#x27;entrepôt en camion</option><option>Tri du colis à l&#x27;agence de livraison</option><option>Le livreur part en tournée</option><option>Colis déposé dans la boîte aux lettres</option></select><select data-ui="sk-8" data-label="Ex1 – a) Étape 8" data-answer="Le livreur part en tournée"><option value=""></option><option>Commande passée sur le site</option><option>Hercules apporte l&#x27;étagère à Inès</option><option>Calcul de la taille du carton</option><option>Mise en carton et calage</option><option>Étiquetage par la machine SLAM</option><option>Le colis quitte l&#x27;entrepôt en camion</option><option>Tri du colis à l&#x27;agence de livraison</option><option>Le livreur part en tournée</option><option>Colis déposé dans la boîte aux lettres</option></select><select data-ui="sk-9" data-label="Ex1 – a) Étape 9" data-answer="Colis déposé dans la boîte aux lettres"><option value=""></option><option>Commande passée sur le site</option><option>Hercules apporte l&#x27;étagère à Inès</option><option>Calcul de la taille du carton</option><option>Mise en carton et calage</option><option>Étiquetage par la machine SLAM</option><option>Le colis quitte l&#x27;entrepôt en camion</option><option>Tri du colis à l&#x27;agence de livraison</option><option>Le livreur part en tournée</option><option>Colis déposé dans la boîte aux lettres</option></select></div>
+      <p style="margin-top:14px;"><span class="q-num">b)</span> Calcule les durées. <span style="color:var(--muted)">(Attention, on change de jour !)</span></p>
+      <table class="pwd"><colgroup><col style="width:55%;"><col style="width:45%;"></colgroup>
+        <tr><td>Durée totale, de la commande à la livraison</td><td><select data-label="Ex1 – b) Durée totale" data-answer="20 h 48 min"><option value=""></option><option>17 h 58 min</option><option>20 h 48 min</option><option>21 h 10 min</option><option>44 h 48 min</option></select></td></tr>
+        <tr><td>Temps passé dans l'entrepôt (de la commande au départ en camion)</td><td><select data-label="Ex1 – b) Temps dans l'entrepôt" data-answer="2 h 48 min"><option value=""></option><option>2 h 12 min</option><option>2 h 48 min</option><option>3 h 48 min</option><option>23 h 58 min</option></select></td></tr>
+        <tr><td>Temps entre le départ du livreur en tournée et la livraison</td><td><select data-label="Ex1 – b) Tournée du livreur" data-answer="6 h 09 min"><option value=""></option><option>5 h 51 min</option><option>6 h 09 min</option><option>6 h 49 min</option><option>7 h 09 min</option></select></td></tr>
+      </table>
+      <div class="box" style="margin-top:10px;"><p style="margin:0 0 6px 0;">Le livreur a-t-il respecté le créneau horaire annoncé à Léna ?</p><select class="wide" data-label="Ex1 – Dernière question" data-answer="Oui : livré à 17h58, dans le créneau 16h15 – 19h15"><option value=""></option><option>Non : il est arrivé après 19h15</option><option>Oui : livré à 17h58, dans le créneau 16h15 – 19h15</option><option>Non : il est arrivé avant 16h15</option><option>On ne peut pas le savoir avec les documents</option></select></div>
+      <p class="noprint"><button type="button" class="btn" data-v="e1">Vérifier mes réponses</button><span class="vc" data-c="e1"></span></p>
+    </div>
+  </div>
+
+  <!-- ================= EXERCICE 2 ================= -->
+  <div class="step" data-s="e2">
+    <div class="step-header"><div class="step-number">3</div><div class="step-title">Exercice 2 · À quels besoins répond le système ?</div></div>
+    <div class="step-body">
+      <p><span class="q-num">a)</span> Range chaque carte dans la bonne catégorie de besoin. Touche une carte, puis touche la zone où la ranger (tu peux aussi la glisser). Chaque carte se cache dans un des documents !</p>
+      <div class="sortbox sort3">
+        <div class="zone" id="z-usage" data-zone="Usage" style="border-color:#93c5fd;background:var(--blue-light);"><div class="zt">🚀 Usage<span>le service rendu à l'utilisateur</span></div><div class="zc"></div></div>
+        <div class="zone" id="z-secu" data-zone="Sécurité" style="border-color:#fca5a5;background:#fef2f2;"><div class="zt">🛡️ Sécurité<span>éviter les blessures et les accidents</span></div><div class="zc"></div></div>
+        <div class="zone" id="z-conf" data-zone="Confort" style="border-color:#c4b5fd;background:var(--violet-light);"><div class="zt">🛋️ Confort<span>facilité, ergonomie, bien-être</span></div><div class="zc"></div></div>
+      </div>
+      <div class="zone" id="z-pool" data-zone=""><div class="zt">Cartes à ranger<span></span></div><div class="zc"><button type="button" class="cardx" id="c-ex2-0" draggable="true">Livraison en 1 jour</button><button type="button" class="cardx" id="c-ex2-1" draggable="true">Moins de pas chaque jour</button><button type="button" class="cardx" id="c-ex2-2" draggable="true">Site ouvert 24h/24</button><button type="button" class="cardx" id="c-ex2-3" draggable="true">Ne plus porter de charges lourdes</button><button type="button" class="cardx" id="c-ex2-4" draggable="true">Suivi du colis avec créneau horaire</button><button type="button" class="cardx" id="c-ex2-5" draggable="true">Veste qui signale l&#x27;employé aux robots</button><button type="button" class="cardx" id="c-ex2-6" draggable="true">Achat en 1 clic</button><button type="button" class="cardx" id="c-ex2-7" draggable="true">Plan de travail réglable</button><button type="button" class="cardx" id="c-ex2-8" draggable="true">Grand choix d&#x27;articles</button><button type="button" class="cardx" id="c-ex2-9" draggable="true">Zone robots balisée</button></div></div>
+      <div style="display:none"><select data-ui="c-ex2-0" data-label="Ex2 – a) Livraison en 1 jour" data-answer="Usage"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select><select data-ui="c-ex2-1" data-label="Ex2 – a) Moins de pas chaque jour" data-answer="Confort"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select><select data-ui="c-ex2-2" data-label="Ex2 – a) Site ouvert 24h/24" data-answer="Usage"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select><select data-ui="c-ex2-3" data-label="Ex2 – a) Ne plus porter de charges lourdes" data-answer="Sécurité"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select><select data-ui="c-ex2-4" data-label="Ex2 – a) Suivi du colis avec créneau horaire" data-answer="Usage"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select><select data-ui="c-ex2-5" data-label="Ex2 – a) Veste qui signale l&#x27;employé aux robots" data-answer="Sécurité"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select><select data-ui="c-ex2-6" data-label="Ex2 – a) Achat en 1 clic" data-answer="Confort"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select><select data-ui="c-ex2-7" data-label="Ex2 – a) Plan de travail réglable" data-answer="Confort"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select><select data-ui="c-ex2-8" data-label="Ex2 – a) Grand choix d&#x27;articles" data-answer="Usage"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select><select data-ui="c-ex2-9" data-label="Ex2 – a) Zone robots balisée" data-answer="Sécurité"><option value=""></option><option>Usage</option><option>Sécurité</option><option>Confort</option></select></div>
+
+      <p style="margin-top:14px;"><span class="q-num">b)</span> Prouve-le ! Dans quel document as-tu trouvé chaque carte, et à qui est-elle utile ?</p>
+      <table class="pwd"><colgroup><col style="width:44%;"><col style="width:22%;"><col style="width:34%;"></colgroup>
+        <tr><th>Carte</th><th>Document</th><th>Utile pour…</th></tr>
+        <tr><td><strong class="good">Veste qui signale l&#x27;employé aux robots</strong></td><td><select data-label="Ex2 – b) Document : Veste qui signale l&#x27;employé aux robots" data-answer="Doc D"><option value=""></option><option>Doc A</option><option>Doc B</option><option>Doc C</option><option>Doc D</option><option>Doc E</option><option>Doc F</option><option>Doc G</option></select></td><td><select data-label="Ex2 – b) Utile pour : Veste qui signale l’employé aux robots" data-answer="l’employé"><option value=""></option><option>le client</option><option>l’employé</option></select></td></tr><tr><td><strong class="good">Suivi du colis avec créneau horaire</strong></td><td><select data-label="Ex2 – b) Document : Suivi du colis avec créneau horaire" data-answer="Doc A"><option value=""></option><option>Doc A</option><option>Doc B</option><option>Doc C</option><option>Doc D</option><option>Doc E</option><option>Doc F</option><option>Doc G</option></select></td><td><select data-label="Ex2 – b) Utile pour : Suivi du colis avec créneau horaire" data-answer="le client"><option value=""></option><option>le client</option><option>l’employé</option></select></td></tr><tr><td><strong class="good">Plan de travail réglable</strong></td><td><select data-label="Ex2 – b) Document : Plan de travail réglable" data-answer="Doc E"><option value=""></option><option>Doc A</option><option>Doc B</option><option>Doc C</option><option>Doc D</option><option>Doc E</option><option>Doc F</option><option>Doc G</option></select></td><td><select data-label="Ex2 – b) Utile pour : Plan de travail réglable" data-answer="l’employé"><option value=""></option><option>le client</option><option>l’employé</option></select></td></tr><tr><td><strong class="good">Grand choix d&#x27;articles</strong></td><td><select data-label="Ex2 – b) Document : Grand choix d&#x27;articles" data-answer="Doc B"><option value=""></option><option>Doc A</option><option>Doc B</option><option>Doc C</option><option>Doc D</option><option>Doc E</option><option>Doc F</option><option>Doc G</option></select></td><td><select data-label="Ex2 – b) Utile pour : Grand choix d&#x27;articles" data-answer="le client"><option value=""></option><option>le client</option><option>l’employé</option></select></td></tr>
+      </table>
+      <div class="box" style="margin-top:10px;"><p style="margin:0 0 6px 0;">Grâce au robot Hercules, qu'est-ce qui change pour la préparatrice ?</p><select class="wide" data-label="Ex2 – Dernière question" data-answer="Elle ne se déplace plus dans les allées : c'est l'étagère qui vient à elle"><option value=""></option><option>Elle ne travaille plus du tout : le robot fait tout</option><option>Elle marche plus qu'avant pour suivre le robot</option><option>Elle ne se déplace plus dans les allées : c'est l'étagère qui vient à elle</option><option>Elle conduit le robot avec une manette</option></select></div>
+      <p class="noprint"><button type="button" class="btn" data-v="e2">Vérifier mes réponses</button><span class="vc" data-c="e2"></span></p>
+    </div>
+  </div>
+
+  <!-- ================= EXERCICE 3 ================= -->
+  <div class="step" data-s="e3">
+    <div class="step-header"><div class="step-number">4</div><div class="step-title">Exercice 3 · Entrepôt classique ou robotisé ?</div></div>
+    <div class="step-body">
+      <p><span class="q-num">a)</span> Compare les deux entrepôts à l'aide des documents C, D et F.</p>
+      <table class="pwd"><colgroup><col style="width:30%;"><col style="width:35%;"><col style="width:35%;"></colgroup>
+        <tr><th></th><th>Entrepôt classique</th><th>Entrepôt robotisé</th></tr>
+        <tr><td><strong class="good">Qui se déplace jusqu&#x27;au produit ?</strong></td><td><select data-label="Ex3 – a) Qui se déplace jusqu&#x27;au produit ? (classique)" data-answer="L&#x27;employé"><option value=""></option><option>L&#x27;employé</option><option>L&#x27;étagère, portée par un robot</option></select></td><td><select data-label="Ex3 – a) Qui se déplace jusqu&#x27;au produit ? (robotisé)" data-answer="L&#x27;étagère, portée par un robot"><option value=""></option><option>L&#x27;employé</option><option>L&#x27;étagère, portée par un robot</option></select></td></tr><tr><td><strong class="good">Distance marchée par l&#x27;employé</strong></td><td><select data-label="Ex3 – a) Distance marchée par l&#x27;employé (classique)" data-answer="Environ 15 km par jour"><option value=""></option><option>Environ 15 km par jour</option><option>Presque rien : il reste à son poste</option><option>Environ 500 km par jour</option></select></td><td><select data-label="Ex3 – a) Distance marchée par l&#x27;employé (robotisé)" data-answer="Presque rien : il reste à son poste"><option value=""></option><option>Environ 15 km par jour</option><option>Presque rien : il reste à son poste</option><option>Environ 500 km par jour</option></select></td></tr><tr><td><strong class="good">Efforts physiques</strong></td><td><select data-label="Ex3 – a) Efforts physiques (classique)" data-answer="Porter, se baisser, monter sur l&#x27;escabeau"><option value=""></option><option>Porter, se baisser, monter sur l&#x27;escabeau</option><option>Peu d&#x27;efforts : l&#x27;article arrive à hauteur, poste réglable</option></select></td><td><select data-label="Ex3 – a) Efforts physiques (robotisé)" data-answer="Peu d&#x27;efforts : l&#x27;article arrive à hauteur, poste réglable"><option value=""></option><option>Porter, se baisser, monter sur l&#x27;escabeau</option><option>Peu d&#x27;efforts : l&#x27;article arrive à hauteur, poste réglable</option></select></td></tr><tr><td><strong class="good">Risque pour la santé</strong></td><td><select data-label="Ex3 – a) Risque pour la santé (classique)" data-answer="Élevé : mal de dos, TMS"><option value=""></option><option>Élevé : mal de dos, TMS</option><option>Plus faible : moins de marche et de charges</option></select></td><td><select data-label="Ex3 – a) Risque pour la santé (robotisé)" data-answer="Plus faible : moins de marche et de charges"><option value=""></option><option>Élevé : mal de dos, TMS</option><option>Plus faible : moins de marche et de charges</option></select></td></tr>
+      </table>
+      <p style="margin-top:14px;"><span class="q-num">b)</span> Dans l'entrepôt classique, Inès marchait environ 15 km par jour, 5 jours par semaine et environ 45 semaines par an.</p>
+      <table class="pwd"><colgroup><col style="width:55%;"><col style="width:45%;"></colgroup>
+        <tr><td>Distance marchée en une semaine</td><td><select data-label="Ex3 – b) Km par semaine" data-answer="75 km"><option value=""></option><option>15 km</option><option>45 km</option><option>75 km</option><option>150 km</option></select></td></tr>
+        <tr><td>Distance marchée en un an</td><td><select data-label="Ex3 – b) Km par an" data-answer="3 375 km"><option value=""></option><option>675 km</option><option>3 375 km</option><option>7 500 km</option><option>33 750 km</option></select></td></tr>
+      </table>
+      <p style="margin-top:14px;"><span class="q-num">c)</span> La santé au travail (doc F).</p>
+      <table class="pwd"><colgroup><col style="width:45%;"><col style="width:55%;"></colgroup>
+        <tr><td>Quelle part des accidents du travail sont des lombalgies (mal de dos) ?</td><td><select data-label="Ex3 – c) Part des lombalgies" data-answer="20 %"><option value=""></option><option>2 %</option><option>20 %</option><option>50 %</option><option>80 %</option></select></td></tr>
+        <tr><td>Quelle est l'une des principales causes d'accidents du travail ?</td><td><select data-label="Ex3 – c) Principale cause" data-answer="L'activité physique : porter, soulever, se pencher"><option value=""></option><option>Le travail sur ordinateur</option><option>Les accidents de la route</option><option>L'activité physique : porter, soulever, se pencher</option><option>Les robots</option></select></td></tr>
+      </table>
+      <div class="box" style="margin-top:10px;"><p style="margin:0 0 6px 0;">Pourquoi peut-on dire que le robot Hercules protège la santé des employés ?</p><select class="wide" data-label="Ex3 – Dernière question" data-answer="Il évite la marche et le port de charges, qui abîment le dos et les articulations"><option value=""></option><option>Il surveille les employés avec sa caméra</option><option>Il évite la marche et le port de charges, qui abîment le dos et les articulations</option><option>Il remplace tous les employés de l'entrepôt</option><option>Il soigne les employés blessés</option></select></div>
+      <p class="noprint"><button type="button" class="btn" data-v="e3">Vérifier mes réponses</button><span class="vc" data-c="e3"></span></p>
+    </div>
+  </div>
+
+  <!-- ================= EXERCICE 4 ================= -->
+  <div class="step" data-s="e4">
+    <div class="step-header"><div class="step-number">5</div><div class="step-title">Exercice 4 · Livré un dimanche : pour qui ?</div></div>
+    <div class="step-body">
+      <p>La lampe a été commandée un samedi soir et livrée un dimanche. Est-ce une bonne chose pour tout le monde ? <span style="color:var(--muted)">(Aide-toi des docs A, C et G.)</span></p>
+      <table class="pwd"><colgroup><col style="width:32%;"><col style="width:68%;"></colgroup><tr><td>Un avantage pour la cliente</td><td><select data-label="Ex4 – Avantage pour la cliente" data-answer="Elle reçoit sa lampe en moins de 21 h, même un dimanche"><option value=""></option><option>Elle paie moins cher quand elle est livrée le dimanche</option><option>Elle reçoit sa lampe en moins de 21 h, même un dimanche</option><option>Elle peut aller chercher sa lampe à l&#x27;entrepôt</option><option>Le livreur installe la lampe chez elle</option></select></td></tr><tr><td>Le document qui le prouve</td><td><select data-label="Ex4 – Document : avantage" data-answer="Doc A"><option value=""></option><option>Doc A</option><option>Doc B</option><option>Doc C</option><option>Doc D</option><option>Doc E</option><option>Doc F</option><option>Doc G</option></select></td></tr><tr><td>Un autre avantage pour la cliente</td><td><select data-label="Ex4 – Autre avantage" data-answer="Pas besoin d&#x27;être chez elle : colis mis dans la boîte aux lettres"><option value=""></option><option>Elle doit rester chez elle toute la journée pour signer</option><option>Pas besoin d&#x27;être chez elle : colis mis dans la boîte aux lettres</option><option>Elle peut choisir le livreur</option><option>Le colis est livré par un robot</option></select></td></tr><tr><td>Une conséquence pour les employés</td><td><select data-label="Ex4 – Conséquence pour les employés" data-answer="Ils doivent travailler le soir, la nuit et le dimanche"><option value=""></option><option>Ils ne travaillent plus le week-end grâce aux robots</option><option>Ils travaillent seulement le matin</option><option>Ils doivent travailler le soir, la nuit et le dimanche</option><option>Les robots livrent les colis à leur place</option></select></td></tr><tr><td>Le document qui montre que le colis voyage la nuit</td><td><select data-label="Ex4 – Document : la nuit" data-answer="Doc G"><option value=""></option><option>Doc A</option><option>Doc B</option><option>Doc C</option><option>Doc D</option><option>Doc E</option><option>Doc F</option><option>Doc G</option></select></td></tr><tr><td>Le document qui montre qu&#x27;Inès travaille un samedi soir</td><td><select data-label="Ex4 – Document : samedi soir" data-answer="Doc C"><option value=""></option><option>Doc A</option><option>Doc B</option><option>Doc C</option><option>Doc D</option><option>Doc E</option><option>Doc F</option><option>Doc G</option></select></td></tr><tr><td>Pour ces employés, cela peut entraîner…</td><td><select data-label="Ex4 – Effet sur les employés" data-answer="Moins de temps de repos et avec leur famille"><option value=""></option><option>Plus de vacances</option><option>Moins de temps de repos et avec leur famille</option><option>Des colis plus légers à porter</option><option>Aucun changement</option></select></td></tr></table>
+      <div class="box" style="margin-top:10px;"><p style="margin:0 0 6px 0;">Les robots suppriment-ils le travail de nuit et du dimanche ?</p><select class=wide data-label="Ex4 – Dernière question" data-answer="Non : ils rendent le travail moins dur, mais il faut toujours des personnes la nuit et le dimanche"><option value=""></option><option>Oui : grâce aux robots, plus personne ne travaille la nuit</option><option>Non : ils rendent le travail moins dur, mais il faut toujours des personnes la nuit et le dimanche</option><option>Oui : les robots conduisent aussi les camions</option><option>On ne peut pas le savoir</option></select></div>
+      <p class="noprint"><button type="button" class="btn" data-v="e4">Vérifier mes réponses</button><span class="vc" data-c="e4"></span></p>
+    </div>
+  </div>
+
+  <!-- ================= ÉTAPE 7 : INTERNET ================= -->
+  <div class="step">
+    <div class="step-header"><div class="step-number">6</div><div class="step-title">D'autres robots d'Amazon</div></div>
+    <div class="step-body">
+      <p style="margin-top:0;">Hercules n'est pas le seul robot d'Amazon. Choisis <strong>un</strong> des trois robots présentés dans les <strong>documents H, I et J</strong> (3 dernières pages du dossier) et réponds <strong>avec tes propres mots</strong>. <span style="font-weight:400;color:var(--muted);font-size:0.8rem;">(noté par ton professeur · 1 pt)</span></p>
+      <table class="pwd"><colgroup><col style="width:38%;"><col style="width:62%;"></colgroup>
+        <tr><td>Robot choisi et document</td><td><span class="fill" contenteditable="true" data-mgsrc="robot" data-mglabel="Robot et document"></span></td></tr>
+        <tr><td>Ce qu'il fait</td><td><span class="fill" contenteditable="true" data-mgsrc="robot" data-mglabel="Ce qu'il fait"></span></td></tr>
+        <tr><td>Besoin auquel il répond (usage, sécurité, confort) et pourquoi</td><td><span class="fill" contenteditable="true" data-mgsrc="robot" data-mglabel="Besoin auquel il répond"></span></td></tr>
+        <tr><td>Une différence avec Hercules</td><td><span class="fill" contenteditable="true" data-mgsrc="robot" data-mglabel="Différence avec Hercules"></span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================= ÉTAPE 8 : CONCLUSION ================= -->
+  <div class="step">
+    <div class="step-header"><div class="step-number">7</div><div class="step-title">Conclusion de l'enquête</div></div>
+    <div class="step-body">
+      <p>Reviens à ton hypothèse de l'étape 1. <strong>Chaque affirmation doit s'appuyer sur un document</strong> (« D'après le doc… »).</p>
+      <div class="question"><span class="q-label">Notre hypothèse de départ est :</span><select class="wide" data-mgsrc="conc" data-mglabel="Hypothèse"><option value=""></option><option>validée</option><option>en partie validée</option><option>invalidée</option></select></div>
+      <div class="box"><p style="margin:0;font-weight:700;">Réponse au problème : comment Amazon arrive-t-il à préparer une commande aussi vite tout en protégeant ses employés ? <span style="font-weight:400;color:var(--muted);">(3 à 5 phrases, au moins 2 documents cités · noté par ton professeur · 2 pt)</span></p><span class="fill block" contenteditable="true" style="min-height:5em;" data-mgsrc="conc" data-mglabel="Réponse"></span></div>
+    </div>
+  </div>
+
+  <div class="box noprint" id="bonus-hint" style="margin:0 0 18px 0;background:var(--violet-light);border-color:#ddd6fe;"><p style="margin:0;"><strong style="color:var(--violet);">🚀 Tu as terminé en avance ?</strong> Enregistre ton travail, puis lève la main : ton professeur peut débloquer un <strong>défi bonus</strong>.</p></div>
+  <div class="step" data-s="bx" id="bonus-step" style="display:none;">
+    <div class="step-header"><div class="step-number">★</div><div class="step-title">Défi bonus · La commande d'Hugo</div></div>
+    <div class="step-body">
+      <div class="box" style="margin-top:0;background:var(--blue-light);border-color:#bfdbfe;"><p style="margin:0 0 6px 0;">Hugo a commandé une coque de téléphone personnalisée sur le même site. Cette fois, l'article est <strong>vendu et expédié par un vendeur partenaire</strong> : une petite boutique qui prépare ses colis à la main, dans son atelier.</p>
+      <p style="margin:0;">📧 Commandé : <span class="mono-cell">mardi 3 nov. à 14h05</span> · 📧 Expédié : <span class="mono-cell">jeudi 5 nov. à 9h30</span> · 📧 Livré : <span class="mono-cell">samedi 7 nov. à 11h00</span></p></div>
+      <table class="pwd"><colgroup><col style="width:55%;"><col style="width:45%;"></colgroup>
+        <tr><td>Combien de temps entre la commande et l'expédition ?</td><td><select data-bonus="1" data-label="Bonus – Avant l'expédition" data-answer="43 h 25 min"><option value=""></option><option>19 h 25 min</option><option>43 h 25 min</option><option>44 h 35 min</option><option>67 h 25 min</option></select></td></tr>
+        <tr><td>Combien de temps entre la commande et la livraison ?</td><td><select data-bonus="1" data-label="Bonus – Durée totale" data-answer="3 jours 20 h 55 min"><option value=""></option><option>2 jours 20 h 55 min</option><option>3 jours 3 h 05 min</option><option>3 jours 20 h 55 min</option><option>4 jours 3 h 05 min</option></select></td></tr>
+        <tr><td>La commande de Léna était restée dans l'entrepôt 2 h 48 min. Pourquoi celle d'Hugo a-t-elle attendu beaucoup plus longtemps avant de partir ?</td><td><select data-bonus="1" data-label="Bonus – Pourquoi plus lent" data-answer="Le vendeur prépare ses colis à la main, sans entrepôt robotisé"><option value=""></option><option>Hugo habite plus loin que Léna</option><option>Le vendeur prépare ses colis à la main, sans entrepôt robotisé</option><option>Une coque est plus lourde qu'une lampe</option><option>Le site était fermé le mercredi</option></select></td></tr>
+      </table>
+      <div class="box" style="margin-top:10px;"><p style="margin:0 0 6px 0;">Quel avantage de l'entrepôt robotisé cette comparaison montre-t-elle ?</p><select data-bonus="1" class="wide" data-label="Bonus – Dernière question" data-answer="La rapidité de préparation des commandes"><option value=""></option><option>Le prix plus bas des articles</option><option>La rapidité de préparation des commandes</option><option>La qualité des articles vendus</option><option>Le choix des couleurs des cartons</option></select></div>
+      <p class="noprint"><button type="button" class="btn" data-v="bx">Vérifier mes réponses</button><span class="vc" data-c="bx"></span></p>
+    </div>
+  </div>
+
+<div class="step"><div class="step-header"><div class="step-number">✓</div><div class="step-title">Mon bilan</div></div><div class="step-body"><p class="noprint">Cette partie est réservée à l'enseignant(e) : la correction et la note s'affichent avec un code. Le même code permet de débloquer le défi bonus.</p><p class="noprint" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><input type="password" id="bilan-code" placeholder="Code enseignant" autocomplete="off" style="font-family:inherit;font-size:0.85rem;padding:7px 10px;border:1px solid var(--border);border-radius:6px;"><button type="button" class="btn" id="bilan-btn">Corriger et voir la note</button><button type="button" class="btn" id="bonus-btn" style="background:var(--violet);">Débloquer le défi bonus</button><span id="bilan-err" style="color:#b91c1c;font-weight:700;font-size:0.85rem;"></span></p><div id="manual-grading" style="display:none;margin-bottom:12px;"><div class="box" style="background:var(--violet-light);border-color:#ddd6fe;margin-top:0;"><p style="margin:0 0 8px 0;font-weight:800;color:var(--violet);">✍️ Réponses rédigées à noter (4 points sur 20)</p><p style="margin:0 0 8px 0;font-size:0.82rem;color:var(--muted);">Lis chaque réponse et choisis les points : la note se met à jour. Pense à enregistrer le fichier ensuite pour garder ta notation.</p><div class="mg-row"><div class="mg-q"><strong>Hypothèse (étape 1)</strong><div class="mg-a" data-mgshow="hyp"></div></div><select class="sm mg-sel" data-mg="hyp" data-name="Hypothèse (étape 1)" data-max="1"><option value=""></option><option value="0">0 / 1</option><option value="0.5">0,5 / 1</option><option value="1">1 / 1</option></select></div><div class="mg-row"><div class="mg-q"><strong>Un autre robot d'Amazon (étape 6)</strong><div class="mg-a" data-mgshow="robot"></div></div><select class="sm mg-sel" data-mg="robot" data-name="Un autre robot d'Amazon (étape 6)" data-max="1"><option value=""></option><option value="0">0 / 1</option><option value="0.5">0,5 / 1</option><option value="1">1 / 1</option></select></div><div class="mg-row"><div class="mg-q"><strong>Conclusion de l'enquête (étape 7)</strong><div class="mg-a" data-mgshow="conc"></div></div><select class="sm mg-sel" data-mg="conc" data-name="Conclusion de l'enquête (étape 7)" data-max="2"><option value=""></option><option value="0">0 / 2</option><option value="0.5">0,5 / 2</option><option value="1">1 / 2</option><option value="1.5">1,5 / 2</option><option value="2">2 / 2</option></select></div></div></div><div id="bilan"></div></div></div>
+
+  <div class="footer">
+    <div>Technologie — 5e — Enquête logistique : Mission Amazon</div>
+  </div>
+
+  </div>
+<script id="saved-data" type="application/json"></script>
+
+<script>
+(function(){
+  var STORAGE_KEY = "enquete-amazon-5e";
+  var indicator = document.getElementById('save-indicator');
+
+  function getFields(){
+    return {
+      editables: Array.prototype.slice.call(document.querySelectorAll('.fill[contenteditable]')),
+      selects: Array.prototype.slice.call(document.querySelectorAll('select'))
+    };
+  }
+  function buildPayload(){
+    var f = getFields();
+    return {
+      editables: f.editables.map(function(el){ return el.innerText; }),
+      selects: f.selects.map(function(el){ return el.value; }),
+      v: V,
+      sig: SIG,
+      bonus: BONUS
+    };
+  }
+  function applyData(data){
+    if(!data) return;
+    var f = getFields();
+    if(Array.isArray(data.editables)) f.editables.forEach(function(el, i){ if(typeof data.editables[i] === 'string') el.innerText = data.editables[i]; });
+    if(Array.isArray(data.selects)) f.selects.forEach(function(el, i){ if(typeof data.selects[i] === 'string') el.value = data.selects[i]; });
+    if(data.v && typeof data.v === 'object') V = data.v;
+    if(data.sig && typeof data.sig === 'object') SIG = data.sig;
+    if(data.bonus) BONUS = true;
+  }
+
+  // Sauvegarde automatique silencieuse dans le navigateur (filet de sécurité)
+  function saveLocal(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(buildPayload())); }catch(e){} }
+  function loadLocal(){ try{ var r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : null; }catch(e){ return null; } }
+
+  // Réponses intégrées dans un fichier enregistré par l'élève (prioritaires)
+  function loadEmbedded(){
+    var el = document.getElementById('saved-data');
+    if(!el) return null;
+    var t = (el.textContent || '').trim();
+    if(!t) return null;
+    try{ return JSON.parse(t); }catch(e){ return null; }
+  }
+
+  function slug(s){
+    return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+  function getName(){
+    var f = document.querySelectorAll('.meta-row .fill');
+    return Array.prototype.slice.call(f, 0, 3).map(function(el){ return el.innerText.trim(); });
+  }
+  function needName(){
+    var n = getName();
+    if(!n[0]){
+      alert("Écris au moins le nom 1 (nom et prénom) en haut de la page avant d'enregistrer.");
+      return null;
+    }
+    return n;
+  }
+  function baseName(n){
+    var parts = n.map(slug).filter(function(s){ return s; });
+    return parts.join('_') + '_Enquete-Amazon-5e';
+  }
+  function showNom3(){
+    var row = document.getElementById('nom3-row'), btn = document.getElementById('add-nom3');
+    if(row) row.style.display = '';
+    if(btn) btn.style.display = 'none';
+  }
+
+
+  // ----- Autocorrection -----
+  function uiOf(sel){ var i = sel.getAttribute('data-ui'); return i ? document.getElementById(i) : null; }
+  function clearMark(sel){
+    sel.classList.remove('ok','ko','todo');
+    var u0 = uiOf(sel); if(u0) u0.classList.remove('ok','ko','todo');
+    var nx = sel.nextElementSibling;
+    if(nx && nx.classList.contains('mark')) nx.remove();
+  }
+  function mark(sel, state, sym){
+    clearMark(sel);
+    sel.classList.add(state);
+    var u1 = uiOf(sel); if(u1) u1.classList.add(state);
+    var s = document.createElement('span');
+    s.className = 'mark ' + state; s.textContent = sym;
+    sel.insertAdjacentElement('afterend', s);
+  }
+  var EX = (function(){
+    var all = Array.prototype.slice.call(document.querySelectorAll('select[data-answer]:not([data-bonus])')), out = [];
+    [['e1',"Exercice 1 · Le trajet de la commande"],['e2',"Exercice 2 · Les besoins"],['e3',"Exercice 3 · Classique ou robotisé"],['e4',"Exercice 4 · Livré un dimanche"]].forEach(function(p){
+      var s = Array.prototype.slice.call(document.querySelectorAll('[data-s="'+p[0]+'"] select[data-answer]'));
+      var a = all.indexOf(s[0]); out.push({l:p[1], a:a, b:a + s.length});
+    });
+    return out;
+  })();
+  var LAST = null, V = {}, SIG = {}, BONUS = false;
+  var MAX_CHECKS = 4;
+  var PEN = [0, 0.5, 1, 1.5];   // pénalité totale de l'exercice après la 1re, 2e, 3e, 4e vérification (points sur 20)
+  function fmt(x){ return String(x).replace('.', ','); }
+  function cum(n){ return n > 0 ? PEN[Math.min(n, PEN.length) - 1] : 0; }   // pénalité cumulée (pas additionnée) : max 1,5 par exercice
+  function exSels(id){ return Array.prototype.slice.call(document.querySelectorAll('[data-s="'+id+'"] select[data-answer]')); }
+  function exVals(id){ return exSels(id).map(function(s){ return s.value; }); }
+  function restoreMarks(id){
+    var vals = SIG[id]; if(!Array.isArray(vals)) return;
+    exSels(id).forEach(function(s, i){
+      if(!s.value || s.value !== vals[i]) clearMark(s);
+      else if(s.value === s.getAttribute('data-answer')) mark(s,'ok','✓');
+      else mark(s,'ko','✗');
+    });
+  }
+  function restoreAll(){
+    Array.prototype.slice.call(document.querySelectorAll('select[data-answer]')).forEach(clearMark);
+    for(var id in SIG) restoreMarks(id);
+  }
+  function updateUI(id){
+    var n = V[id] | 0;
+    var b = document.querySelector('button[data-v="'+id+'"]');
+    var c = document.querySelector('.vc[data-c="'+id+'"]');
+    if(!b || !c) return;
+    var stop = n >= MAX_CHECKS, p = cum(n);
+    b.disabled = stop;
+    if(id === 'bx'){ c.className = 'vc' + (stop ? ' stop' : ''); c.textContent = stop ? 'Vérifications épuisées (' + n + '/' + MAX_CHECKS + ')' : 'Vérifications : ' + n + '/' + MAX_CHECKS + ' · le bonus ne compte pas dans la note'; return; }
+    c.className = 'vc' + (stop ? ' stop' : (n >= 2 ? ' warn' : ''));
+    if(stop) c.textContent = 'Vérifications épuisées (' + n + '/' + MAX_CHECKS + ') · pénalité −' + fmt(p) + ' pt';
+    else if(n === 0) c.textContent = '1re vérification gratuite';
+    else c.textContent = 'Vérifications : ' + n + '/' + MAX_CHECKS + (p ? ' · pénalité −' + fmt(p) + ' pt' : '') + ' · à la prochaine : −' + fmt(cum(n+1)) + ' pt';
+  }
+  var flash = {};
+  function say(id, msg){
+    var c = document.querySelector('.vc[data-c="'+id+'"]'); if(!c) return;
+    c.className = 'vc'; c.textContent = msg;
+    clearTimeout(flash[id]); flash[id] = setTimeout(function(){ updateUI(id); }, 3500);
+  }
+  function ver(id){
+    if((V[id]|0) >= MAX_CHECKS) return;
+    var vals = exVals(id);
+    if(!vals.some(Boolean)){ say(id, "Réponds d'abord à quelques questions avant de vérifier."); return; }
+    if(Array.isArray(SIG[id]) && JSON.stringify(SIG[id]) === JSON.stringify(vals)){
+      restoreMarks(id);
+      say(id, "Rien n'a changé depuis ta dernière vérification : pas de pénalité.");
+      return;
+    }
+    var perfect = exSels(id).every(function(s){ return s.value && s.value === s.getAttribute('data-answer'); });
+    if(!perfect) V[id] = (V[id]|0) + 1;
+    SIG[id] = vals;
+    restoreMarks(id);
+    updateUI(id);
+  }
+  function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function cut(t,n){ t=String(t); return t.length>n ? t.slice(0,n-3)+'...' : t; }
+  var AUTO = 16;   // points des exercices corrigés automatiquement (les 4 autres : réponses rédigées)
+  function fillManual(){
+    document.querySelectorAll('[data-mgshow]').forEach(function(box){
+      var k = box.getAttribute('data-mgshow'), parts = [];
+      document.querySelectorAll('[data-mgsrc="'+k+'"]').forEach(function(el){
+        var t = (el.tagName === 'SELECT' ? el.value : el.innerText).trim(), lab = el.getAttribute('data-mglabel');
+        parts.push((lab ? "<span class='lab'>"+esc(lab)+" : </span>" : "") + (t ? esc(t) : "<span class='empty'>(vide)</span>"));
+      });
+      box.innerHTML = parts.join('<br>');
+    });
+  }
+  function manualGrades(){
+    var rows = [], sum = 0, miss = 0;
+    document.querySelectorAll('select[data-mg]').forEach(function(s){
+      var m = parseFloat(s.getAttribute('data-max')), v = s.value === '' ? null : parseFloat(s.value);
+      if(v === null) miss++; else sum += v;
+      rows.push({l:s.getAttribute('data-name'), m:m, v:v});
+    });
+    return {rows:rows, sum:sum, missing:miss};
+  }
+  function resetBilan(){
+    var mgd = document.getElementById('manual-grading'); if(mgd) mgd.style.display = 'none';
+    var b = document.getElementById('bilan'); if(b) b.innerHTML = '';
+    restoreAll();
+    LAST = null;
+  }
+  function renderBilan(){
+    var sels = Array.prototype.slice.call(document.querySelectorAll('select[data-answer]:not([data-bonus])'));
+    var ok = sels.map(function(s){
+      var good = s.value && s.value === s.getAttribute('data-answer');
+      if(!s.value) mark(s,'todo','?'); else if(good) mark(s,'ok','✓'); else mark(s,'ko','✗');
+      return !!good;
+    });
+    var pts = ok.filter(Boolean).length, max = sels.length;
+    var MG = manualGrades(), auto = Math.round(pts/max*AUTO*2)/2;
+    var raw = Math.min(20, auto + MG.sum);
+    fillManual(); document.getElementById('manual-grading').style.display = '';
+    var ids = ['e1','e2','e3','e4'], pen = 0;
+    ids.forEach(function(id){ pen += cum(Math.min(V[id]|0, MAX_CHECKS)); });
+    var note = Math.max(0, raw - pen), ns = fmt(note);
+    var msg = note>=18?"Excellent travail !":note>=14?"Très bien, il maîtrise l'essentiel.":note>=10?"C'est correct, mais il reste des points à revoir.":"Il faut reprendre le cours et les exercices en rouge.";
+    var lines = EX.map(function(e, k){
+      var p=0; for(var i=e.a;i<e.b;i++) if(ok[i]) p++;
+      var n = Math.min(V[ids[k]]|0, MAX_CHECKS);
+      return {l:e.l, v:p+" / "+(e.b-e.a), p:p, m:e.b-e.a, sub:n+" vérification"+(n>1?"s":"")+(cum(n)?" · −"+fmt(cum(n))+" pt":"")};
+    });
+    lines.push({l:"Total des points", v:pts+" / "+max, bold:1});
+    lines.push({l:"Exercices corrigés automatiquement", v:fmt(auto)+" / "+AUTO, plain:1});
+    MG.rows.forEach(function(r){ lines.push({l:"Rédaction · "+r.l, v:(r.v === null ? "à noter" : fmt(r.v))+" / "+fmt(r.m), plain:1}); });
+    var BX = null;
+    if(BONUS){
+      var bs = Array.prototype.slice.call(document.querySelectorAll('select[data-bonus]')), bp = 0, be = [];
+      bs.forEach(function(s){ var g = s.value && s.value === s.getAttribute('data-answer'); if(!s.value) mark(s,'todo','?'); else if(g){ mark(s,'ok','✓'); bp++; } else mark(s,'ko','✗'); if(!g) be.push({l:s.getAttribute('data-label'), s:s.value, e:s.getAttribute('data-answer')}); });
+      BX = {p:bp, m:bs.length, errs:be};
+    }
+    lines.push({l:"Note brute (avant pénalité)", v:fmt(raw)+" / 20", plain:1});
+    lines.push({l:"Pénalité des vérifications", v:(pen?"−"+fmt(pen):"0")+" pt", plain:1});
+    var errs = [];
+    sels.forEach(function(s,i){ if(!ok[i]) errs.push({l:s.getAttribute('data-label'), s:s.value, e:s.getAttribute('data-answer')}); });
+    LAST = {note:ns, raw:fmt(raw), pen:pen, pts:pts, max:max, lines:lines, errs:errs, bonus:BX};
+    var html = (MG.missing ? "<p style='margin:0 0 8px 0;font-weight:800;color:#b45309;'>⚠ Note provisoire : "+MG.missing+" réponse"+(MG.missing>1?"s":"")+" rédigée"+(MG.missing>1?"s":"")+" à noter ci-dessus.</p>" : "") + "<div class='bilan-note'><div class='big'>"+ns+" / 20</div><div>"+pts+" point"+(pts>1?"s":"")+" sur "+max+(pen?" · note brute "+fmt(raw)+" / 20 · pénalité −"+fmt(pen)+" pt":"")+"</div><p style='margin:6px 0 0 0;font-weight:700;'>"+msg+"</p></div>";
+    lines.forEach(function(r){
+      var cls = (r.bold||r.plain) ? "" : (r.p===r.m ? "full" : (r.p<r.m/2 ? "low" : ""));
+      html += "<div class='bl-row "+cls+"'"+(r.bold?" style='font-weight:800;'":"")+"><span>"+r.l+"</span><strong>"+r.v+"</strong></div>"+(r.sub?"<div class='bl-err'>Vérifications : "+r.sub+"</div>":"");
+    });
+    if(errs.length){
+      html += "<div class='box' style='margin-top:12px;'><strong>Réponses à revoir</strong>";
+      errs.forEach(function(x){ html += "<p class='bl-err'><strong>"+esc(x.l)+"</strong> : "+(x.s?esc(x.s):"<em>(vide)</em>")+" — attendu : "+esc(x.e)+"</p>"; });
+      html += "</div>";
+    }
+    if(BX){
+      html += "<div class='box' style='margin-top:12px;border:2px solid var(--violet);background:var(--violet-light);'><div class='bl-row' style='border:none;'><span><strong style='color:var(--violet);'>★ Défi bonus</strong> — à part, non compté dans la note</span><strong>"+BX.p+" / "+BX.m+"</strong></div>";
+      BX.errs.forEach(function(x){ html += "<p class='bl-err'><strong>"+esc(x.l)+"</strong> : "+(x.s?esc(x.s):"<em>(vide)</em>")+" — attendu : "+esc(x.e)+"</p>"; });
+      html += "</div>";
+    }
+    html += "<p class='noprint' style='display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;'><button type='button' class='btn' id='bl-export'>Exporter le barème noté (PDF)</button><button type='button' class='btn' id='bl-close' style='background:#64748b;'>Fermer la note</button><button type='button' class='btn' id='bl-resetchecks' style='background:#b45309;'>Remettre les vérifications à zéro</button></p>";
+    document.getElementById('bilan').innerHTML = html;
+    document.getElementById('bl-export').addEventListener('click', exportBilan);
+    document.getElementById('bl-resetchecks').addEventListener('click', function(){
+      if(!confirm("Remettre à zéro le compteur de vérifications de cet élève (pénalités comprises) ?")) return;
+      V = {}; SIG = {}; ['e1','e2','e3','e4'].forEach(updateUI); saveLocal(); renderBilan();
+    });
+    document.getElementById('bl-close').addEventListener('click', function(){ resetBilan(); document.getElementById('bilan-code').scrollIntoView({behavior:'smooth',block:'center'}); });
+    if(indicator){ indicator.textContent = 'Note : ' + ns + ' / 20'; }
+  }
+  function pe(t){
+    var map={8722:45,8212:151,8211:150,8217:146,339:156,8364:128,183:183}, o='';
+    t=String(t).replace(/\s+/g,' ');
+    for(var i=0;i<t.length;i++){ var c=t.charCodeAt(i); if(map[c]) c=map[c]; else if(c>255) c=63; var ch=String.fromCharCode(c); if(ch==='\\'||ch==='('||ch===')') o+='\\'; o+=ch; }
+    return o;
+  }
+  function exportBilan(){
+    if(!LAST) return;
+    if(!getName()[0]){
+      alert("Impossible d'exporter la note : écris au moins le nom 1 (nom et prénom) en haut de la page.");
+      var f1 = document.querySelector('.meta-row .fill');
+      if(f1){ f1.scrollIntoView({behavior:'smooth',block:'center'}); f1.focus(); }
+      return;
+    }
+    var L=LAST, it=[], y=60, H=842;
+    function Y(v){ return H-v; }
+    it.push({t:"Barème noté — Enquête logistique : Mission Amazon",x:50,y:Y(y),s:15,b:1}); y+=18;
+    it.push({t:"Technologie — 5e — Enquête logistique",x:50,y:Y(y),s:9,g:0.4}); y+=26;
+    var nm=getName().filter(Boolean).join(', ')||"(nom non renseigné)";
+    it.push({t:"Élève(s) : "+nm,x:50,y:Y(y),s:11}); y+=16;
+    it.push({t:"Date : "+new Date().toLocaleDateString('fr-FR'),x:50,y:Y(y),s:11}); y+=18;
+    var box=[50,Y(y+58),495,58];
+    it.push({t:"Note : "+L.note+" / 20",x:64,y:Y(y+27),s:20,b:1});
+    it.push({t:L.pts+" point"+(L.pts>1?"s":"")+" sur "+L.max+(L.pen?"  -  note brute "+L.raw+" / 20, pénalité −"+fmt(L.pen)+" pt":""),x:64,y:Y(y+46),s:10});
+    y+=84;
+    it.push({t:"Partie",x:50,y:Y(y),s:10,b:1}); it.push({t:"Points",x:400,y:Y(y),s:10,b:1}); y+=6;
+    it.push({l:[50,Y(y),545,Y(y)]}); y+=15;
+    L.lines.forEach(function(r){
+      it.push({t:r.l,x:50,y:Y(y),s:10,b:r.bold?1:0}); it.push({t:r.v,x:400,y:Y(y),s:10,b:r.bold?1:0});
+      if(r.sub){ y+=11; it.push({t:"Vérifications : "+r.sub,x:60,y:Y(y),s:8,g:0.4}); }
+      y+=6; it.push({l:[50,Y(y),545,Y(y)]}); y+=15;
+    });
+    if(L.errs.length){
+      y+=10; it.push({t:"Réponses à revoir",x:50,y:Y(y),s:10,b:1}); y+=15;
+      L.errs.slice(0,30).forEach(function(x){
+        it.push({t:cut(x.l+" : "+(x.s||"(vide)"),62)+"   [attendu : "+cut(x.e,40)+"]",x:50,y:Y(y),s:8}); y+=12;
+      });
+    }
+    if(L.bonus){
+      y+=14; it.push({l:[50,Y(y),545,Y(y)]}); y+=18;
+      it.push({t:"Défi bonus (à part, non compté dans la note)",x:50,y:Y(y),s:10,b:1}); it.push({t:L.bonus.p+" / "+L.bonus.m,x:400,y:Y(y),s:10,b:1}); y+=15;
+      L.bonus.errs.slice(0,12).forEach(function(x){ it.push({t:cut(x.l+" : "+(x.s||"(vide)"),62)+"   [attendu : "+cut(x.e,40)+"]",x:50,y:Y(y),s:8}); y+=12; });
+    }
+    var cs='';
+    cs+='0.15 0.39 0.92 RG 1.5 w '+box.join(' ')+' re S\n';
+    it.forEach(function(o){
+      if(o.t!==undefined) cs+='BT /'+(o.b?'F2':'F1')+' '+(o.s||10)+' Tf '+(o.g!==undefined?o.g:0)+' g '+o.x+' '+o.y+' Td ('+pe(o.t)+') Tj ET\n';
+      else if(o.l) cs+='0.8 G 0.5 w '+o.l[0]+' '+o.l[1]+' m '+o.l[2]+' '+o.l[3]+' l S\n';
+    });
+    var objs=[];
+    objs[1]='<< /Type /Catalog /Pages 2 0 R >>';
+    objs[2]='<< /Type /Pages /Kids [3 0 R] /Count 1 >>';
+    objs[3]='<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>';
+    objs[4]='<< /Length '+cs.length+' >>\nstream\n'+cs+'endstream';
+    objs[5]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>';
+    objs[6]='<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>';
+    var out='%PDF-1.4\n', off=[], i;
+    for(i=1;i<=6;i++){ off[i]=out.length; out+=i+' 0 obj\n'+objs[i]+'\nendobj\n'; }
+    var xr=out.length;
+    out+='xref\n0 7\n0000000000 65535 f \n';
+    for(i=1;i<=6;i++) out+=('0000000000'+off[i]).slice(-10)+' 00000 n \n';
+    out+='trailer\n<< /Size 7 /Root 1 0 R >>\nstartxref\n'+xr+'\n%%EOF';
+    var u=new Uint8Array(out.length); for(i=0;i<out.length;i++) u[i]=out.charCodeAt(i)&255;
+    var n=getName().map(slug).filter(function(x){return x;}).join('_')||'eleve';
+    var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([u],{type:'application/pdf'})); a.download=n+'_Bareme-note.pdf';
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500);
+  }
+  var CODE_HASH=5709319613412547, SALT='bin4e-s1|';
+  function h53(str){var h1=0xdeadbeef,h2=0x41c6ce57;for(var i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return 4294967296*(2097151&h2)+(h1>>>0);}
+  function bilanGo(){
+    var inp=document.getElementById('bilan-code'), er=document.getElementById('bilan-err');
+    if(h53(SALT+inp.value.trim())!==CODE_HASH){ er.textContent='Code incorrect.'; return; }
+    er.textContent=''; inp.value='';
+    renderBilan();
+    document.getElementById('bilan').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function showBonus(){
+    var st = document.getElementById('bonus-step'), h = document.getElementById('bonus-hint'), bt = document.getElementById('bonus-btn');
+    if(st) st.style.display = BONUS ? '' : 'none';
+    if(h) h.style.display = BONUS ? 'none' : '';
+    if(bt) bt.textContent = BONUS ? 'Bloquer le défi bonus' : 'Débloquer le défi bonus';
+    updateUI('bx');
+  }
+  function bonusGo(){
+    var inp=document.getElementById('bilan-code'), er=document.getElementById('bilan-err');
+    if(h53(SALT+inp.value.trim())!==CODE_HASH){ er.textContent='Code incorrect.'; return; }
+    er.textContent=''; inp.value='';
+    BONUS = !BONUS; showBonus(); saveLocal();
+    if(LAST) renderBilan();
+    if(BONUS) document.getElementById('bonus-step').scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function resetAll(){
+    if(!confirm("Tout effacer (noms, réponses et vérifications utilisées) et recommencer à zéro ? Cette action est définitive.")) return;
+    var f = getFields();
+    f.editables.forEach(function(e){ e.innerText = ''; });
+    f.selects.forEach(function(s){ s.value = ''; clearMark(s); });
+    if(window.syncGames) window.syncGames();
+    V = {}; SIG = {}; LAST = null; BONUS = false; showBonus();
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(x){}
+    var row = document.getElementById('nom3-row'), btn = document.getElementById('add-nom3');
+    if(row) row.style.display = 'none'; if(btn) btn.style.display = '';
+    document.getElementById('bilan').innerHTML = '';
+    document.getElementById('bilan-code').value = '';
+    document.getElementById('bilan-err').textContent = '';
+    if(indicator) indicator.textContent = '';
+    ['e1','e2','e3','e4'].forEach(updateUI);
+    saveLocal();
+  }
+
+  // Bouton 1 : télécharger un fichier de travail à rouvrir la prochaine fois
+  function saveWork(){
+    var n = needName(); if(!n) return;
+    var data = buildPayload();
+    var clone = document.documentElement.cloneNode(true);
+    var holder = clone.querySelector('#saved-data');
+    if(holder) holder.textContent = JSON.stringify(data).replace(/</g, '\\u003c');
+    var html = '<!DOCTYPE html>\n' + clone.outerHTML;
+    var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = baseName(n) + '.html';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    if(indicator){
+      indicator.textContent = "Fichier enregistré ✓ (rouvre-le la prochaine fois)";
+      setTimeout(function(){ indicator.textContent = ''; }, 5000);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    applyData(loadEmbedded() || loadLocal());
+    restoreAll();
+    ['e1','e2','e3','e4'].forEach(updateUI);
+    var n3 = document.querySelectorAll('.meta-row .fill')[2];
+    if(n3 && n3.innerText.trim()) showNom3();
+    document.getElementById('add-nom3').addEventListener('click', function(){
+      showNom3();
+      var x = document.querySelectorAll('.meta-row .fill')[2]; if(x) x.focus();
+    });
+    var f = getFields();
+    f.editables.forEach(function(el){ el.addEventListener('input', saveLocal); el.addEventListener('blur', saveLocal); });
+    f.selects.forEach(function(el){ if(el.hasAttribute('data-mg')){ el.addEventListener('change', function(){ saveLocal(); if(LAST) renderBilan(); }); return; } el.addEventListener('change', function(){ if(LAST){ resetBilan(); } clearMark(el); saveLocal(); }); });
+    Array.prototype.slice.call(document.querySelectorAll('button[data-v]')).forEach(function(b){ b.addEventListener('click', function(){ ver(b.getAttribute('data-v')); saveLocal(); }); });
+    document.getElementById('reset-btn').addEventListener('click', resetAll);
+    document.getElementById('bilan-btn').addEventListener('click', bilanGo);
+    document.getElementById('bonus-btn').addEventListener('click', bonusGo);
+    showBonus();
+    document.getElementById('bilan-code').addEventListener('keydown', function(e){ if(e.key==='Enter') bilanGo(); });
+    document.getElementById('save-btn').addEventListener('click', saveWork);
+  });
+  window.addEventListener('beforeunload', saveLocal);
+})();
+</script>
+<div class="copy-warn noprint" id="copy-warn" role="alert">⚠ Attention : le copier-coller est interdit dans cette activité.</div>
+<script>
+(function(){
+  var selected = null;
+  function q(s){ return Array.prototype.slice.call(document.querySelectorAll(s)); }
+  function sOf(el){ return document.querySelector('select[data-ui="'+el.id+'"]'); }
+  function setVal(sel, v){ if(!sel || sel.value === v) return; sel.value = v; sel.dispatchEvent(new Event('change')); }
+  function unpick(){ q('.sel').forEach(function(x){ x.classList.remove('sel'); }); selected = null; }
+  function pick(el){ var same = (selected === el); unpick(); if(!same){ selected = el; el.classList.add('sel'); } }
+  function putCard(c, z){ z.querySelector('.zc').appendChild(c); setVal(sOf(c), z.getAttribute('data-zone')); }
+  function fillSocket(s, v){
+    var chip = q('.chip').filter(function(c){ return c.getAttribute('data-val') === v; })[0];
+    s.classList.toggle('filled', !!chip);
+    s.innerHTML = chip ? chip.innerHTML : '<span class="ph">touche ici</span>';
+  }
+  q('.cardx').forEach(function(c){
+    c.addEventListener('click', function(e){ e.stopPropagation(); pick(c); });
+    c.addEventListener('dragstart', function(e){ e.dataTransfer.setData('text/plain', c.id); });
+  });
+  q('.zone').forEach(function(z){
+    z.addEventListener('click', function(){ if(selected && selected.classList.contains('cardx')){ var c = selected; unpick(); putCard(c, z); } });
+    z.addEventListener('dragover', function(e){ e.preventDefault(); });
+    z.addEventListener('drop', function(e){ e.preventDefault(); var c = document.getElementById(e.dataTransfer.getData('text/plain')); if(c && c.classList.contains('cardx')){ unpick(); putCard(c, z); } });
+  });
+  q('.chip').forEach(function(c){
+    c.addEventListener('click', function(){ pick(c); });
+    c.addEventListener('dragstart', function(e){ e.dataTransfer.setData('text/plain', 'chip:' + c.getAttribute('data-val')); });
+  });
+  q('.socket').forEach(function(s){
+    s.addEventListener('click', function(){
+      if(selected && selected.classList.contains('chip')){ var v = selected.getAttribute('data-val'); unpick(); fillSocket(s, v); setVal(sOf(s), v); }
+      else if(s.classList.contains('filled')){ fillSocket(s, ''); setVal(sOf(s), ''); }
+    });
+    s.addEventListener('dragover', function(e){ e.preventDefault(); });
+    s.addEventListener('drop', function(e){ e.preventDefault(); var t = e.dataTransfer.getData('text/plain'); if(t.indexOf('chip:') === 0){ unpick(); fillSocket(s, t.slice(5)); setVal(sOf(s), t.slice(5)); } });
+  });
+  function sync(){
+    unpick();
+    var cw = document.getElementById('copy-warn'); if(cw) cw.classList.remove('show');
+    q('.cardx').forEach(function(c){
+      var v = sOf(c).value, z = q('.zone').filter(function(x){ return x.getAttribute('data-zone') === v; })[0];
+      if(z && c.parentNode !== z.querySelector('.zc')) z.querySelector('.zc').appendChild(c);
+    });
+    q('.socket').forEach(function(s){ fillSocket(s, sOf(s).value); });
+  }
+  var lastWarn = 0, warnTimer = null;
+  function warn(){
+    var now = Date.now(); if(now - lastWarn < 1200) return; lastWarn = now;
+    var t = document.getElementById('copy-warn'); if(!t) return;
+    t.classList.add('show'); clearTimeout(warnTimer);
+    warnTimer = setTimeout(function(){ t.classList.remove('show'); }, 3500);
+  }
+  ['copy','cut','paste'].forEach(function(ev){
+    document.addEventListener(ev, function(e){
+      if(e.target && e.target.id === 'bilan-code') return;   // le champ du code enseignant reste utilisable
+      e.preventDefault(); warn();
+    }, true);
+  });
+  document.addEventListener('keydown', function(e){
+    if(!(e.ctrlKey || e.metaKey)) return;
+    var k = (e.key || '').toLowerCase();
+    if(k !== 'c' && k !== 'x' && k !== 'v') return;
+    if(e.target && e.target.id === 'bilan-code') return;
+    e.preventDefault(); warn();
+  }, true);
+  window.syncGames = sync;
+  document.addEventListener('DOMContentLoaded', sync);
+})();
+</script>
+<div id="zoom" class="noprint" onclick="this.style.display='none'"><img alt=""></div>
+<script>
+document.querySelectorAll('.shots img').forEach(function(img){ img.addEventListener('click', function(){ var z=document.getElementById('zoom'); z.querySelector('img').src=img.src; z.style.display='flex'; }); });
+</script>
+<script>
+(function(){
+  function updateUsed(){
+    var used = Array.prototype.slice.call(document.querySelectorAll('select[data-ui^="sk-"]')).map(function(s){ return s.value; });
+    document.querySelectorAll('.tl-tray .chip').forEach(function(c){ c.classList.toggle('used', used.indexOf(c.getAttribute('data-val')) !== -1); });
+  }
+  document.querySelectorAll('select[data-ui^="sk-"]').forEach(function(s){ s.addEventListener('change', function(){
+    // une étape ne peut être placée qu'une fois : on vide l'autre case qui la contenait
+    var me = s;
+    if(me.value) document.querySelectorAll('select[data-ui^="sk-"]').forEach(function(o){ if(o !== me && o.value === me.value){ o.value = ''; o.dispatchEvent(new Event('change')); var sk = document.getElementById(o.getAttribute('data-ui')); sk.classList.remove('filled'); sk.innerHTML = '<span class="ph">touche ici</span>'; } });
+    updateUsed();
+  }); });
+  document.addEventListener('DOMContentLoaded', updateUsed);
+  var rb = document.getElementById('reset-btn'); if(rb) rb.addEventListener('click', function(){ setTimeout(updateUsed, 50); });
+})();
+</script>
+</body>
+</html>
